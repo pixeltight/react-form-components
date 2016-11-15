@@ -26,12 +26,12 @@ class FormContainer extends Component {
 		this.handleCurrentPetCountChange = this.handleCurrentPetCountChange.bind(this);
 		this.handleAgeRangeSelect = this.handleAgeRangeSelect.bind(this);
 		this.handlePetSelection = this.handlePetSelection.bind(this);
-		this.handleSiblingSelection = this.handlePetSelection.bind(this);
+		this.handleSiblingsSelection = this.handleSiblingsSelection.bind(this);
 		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 	}
 
 	componentDidMount() {
-		fetch('../fake_db.json')
+		fetch('./fake_db.json')
 			.then(res => res.json())
 			.then(data => {
 				this.setState({
@@ -70,26 +70,30 @@ class FormContainer extends Component {
 	}
 
 	handleCurrentPetCountChange(e) {
-		this.setState({ currentPetCount: e.targetValue });
+		this.setState({ currentPetCount: e.target.value });
+	}
+
+	handleSiblingsSelection(e) {
+		this.setState({ siblingSelection: [e.target.value] }, () => console.log('siblingz', this.state.siblingSelection));
 	}
 
 	handleDescriptionChange(e) {
-		this.setState({ description: e.targetValue });
+		this.setState({ description: e.target.value });
 	}
 
 	handleFormSubmit(e) {
 		e.preventDefault();
-
+		
 		const formPayload = {
-			ownerName: this.setState.ownerName,
-			selectedPets: this.setState.selectedPets,
-			ownerAgeRangeSelection: this.setState.ownerAgeRangeSelection,
-			siblingSelection: this.setState.siblingSelection,
-			currentPetCount: this.setState.currentPetCount,
-			description: this.setState.description
+			ownerName: this.state.ownerName,
+			selectedPets: this.state.selectedPets,
+			ownerAgeRangeSelection: this.state.ownerAgeRangeSelection,
+			siblingSelection: this.state.siblingSelection,
+			currentPetCount: this.state.currentPetCount,
+			description: this.state.description
 		};
 
-		console.log('Payload for form request: ' + formPayload);
+		console.log('Payload for form request: ', formPayload);
 		this.handleClearForm(e);
 	}
 
@@ -99,7 +103,7 @@ class FormContainer extends Component {
 			ownerName: '',
 			selectedPets: [],
 			ownerAgeRangeSelection: '',
-			siblingSelection: '',
+			siblingSelection: [],
 			currentPetCount: '',
 			description: ''
 		});
@@ -115,35 +119,36 @@ class FormContainer extends Component {
 					name={'name'}
 					controlFunc={this.handleFullNameChange}
 					content={this.state.ownerName} 
-					placeholder={'Type first and last name here'} /> // Full name text input
+					placeholder={'Type first and last name here'} /> 
 				<SelectInput 
 					name={'ageRange'}
 					placeholder={'Choose your age range'}
 					options={this.state.ageOptions}
 					controlFunc={this.handleAgeRangeSelect}
-					selectedOption={this.state.ownerAgeRangeSelection} /> // Owner Age range text
+					selectedOption={this.state.ownerAgeRangeSelection} />
 				<CheckboxOrRadioGroup
 					title={'Which kinds of pets would you like to adopt?'} 
-					setName={'pets'} 
+					setName={'pets'}
 					type={'checkbox'}
 					controlFunc={this.handlePetSelection}
 					options={this.state.petSelection}
-					selectedOption={this.state.selectedPets} /> // Pet type checkboxes
+					selectedOptions={this.state.selectedPets} />
 				<CheckboxOrRadioGroup
 					title={'Are you willing to adopt more than one pet if we have siblings for adoption?'}
 					setName={'siblings'}
-					controlFunc={this.handleSiblingSelection}
+					controlFunc={this.handleSiblingsSelection}
 					type={'radio'}
 					options={this.state.siblingOptions}
-					selectedOption={this.state.siblingSelection} /> // Will you adopt siblings? radios
+					selectedOptions={this.state.siblingSelection} />
 				<TextInput 
 					inputType={'number'}
 					title={'How many pets do you currently own?'} 
 					name={'currentPetCount'}
 					controlFunc={this.handleCurrentPetCountChange}
 					content={this.state.currentPetCount}
-					placeholder={'Enter number of current pets'}/> // Number of current pets input
-				<TextArea 
+					placeholder={'Enter number of current pets'} />
+					
+				<TextArea
 					title={'If you currently own pets, please write their names, breeds and an outline of their personalities'}
 					rows={5}
 					resize={true}
